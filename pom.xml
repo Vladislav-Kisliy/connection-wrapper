@@ -12,6 +12,7 @@
         <plugin.compiler.version>3.5.1</plugin.compiler.version>
         <software.junit.version>4.12</software.junit.version>
         <software.netty.version>4.1.1.Final</software.netty.version>
+        <spring.version>4.3.0.RELEASE</spring.version>
         <mainClass>com.karlsoft.wrapper.Application</mainClass>
     </properties>
     <dependencies>
@@ -20,6 +21,11 @@
             <artifactId>netty-all</artifactId> <!-- Use 'netty-all' for 4.0 or above -->
             <version>${software.netty.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

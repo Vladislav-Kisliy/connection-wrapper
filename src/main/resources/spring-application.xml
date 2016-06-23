@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- bean definitions here -->
+    <bean id="application.applicationConfiguration"
+          class="com.karlsoft.wrapper.PropertySourcesPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:core.properties</value>
+                <value>classpath:platform.properties</value>
+                <value>${platform.properties}</value>
+                <value>classpath:properties/test-local.properties</value>
+                <value>classpath:properties/test-${spring.profiles.active}.properties</value>
+                <value>${test.properties.file}</value>
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+    <!--<bean id="sonnet29" class="com.springinaction.springidol.impl.Sonet29" />-->
+    <!--    <bean id="poeticDuke" class="com.springinaction.springidol.impl.PoeticJuggler">
+        <constructor-arg value="15" />
+        <constructor-arg>
+            <bean class="com.springinaction.springidol.impl.Sonet29"/>
+        </constructor-arg>
+    </bean>-->
+<!--    <bean id="uotService"
+          class="com.springinaction.springidol.UOT">
+        <property name="transactionTemplate ">
+            <bean class="org.springframework.transaction.support.TransactionTemplate">
+                <property name="transactionManager" ref="transactionManager" />
+            </bean>
+        </property>
+    </bean>-->
+
+<!--    <bean id="stage" class="com.springinaction.springidol.impl.Stage" factory-method="getInstance" />
+    <bean id="kenny" class="com.springinaction.springidol.impl.Instrumentalist">
+        <property name="song" value="Jingle Bells"/>
+        <property name="instrument">
+            <bean class="com.springinaction.springidol.impl.Saxophone" />
+        </property>
+    </bean>
+    <bean id="saxophone" class="com.springinaction.springidol.impl.Saxophone" />
+    <bean id="piano" class="com.springinaction.springidol.impl.Piano" />
+    <bean id="audience" class="com.springinaction.springidol.impl.Audience" />
+    <bean id="volunteer" class="com.springinaction.springidol.impl.Volunteer" />
+    <bean id="magician" class="com.springinaction.springidol.impl.Magician" />
+    <bean id="hank"  class="com.springinaction.springidol.impl.OneManBand">
+        <property name="instruments">
+            <props>
+                <prop key="GUITAR">STRUM STRUM STRUM</prop>
+                <prop key="CYMBAL">CRASH CRASH</prop>
+                <prop key="HARMONICA">HUM HUM HUM</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <aop:config>
+    <aop:aspect ref="magician">
+      <aop:pointcut id="thinking" 
+        expression="execution(* 
+        com.springinaction.springidol.api.Thinker.thinkOfSomething(String)) 
+             and args(thoughts)" />
+          
+      <aop:before 
+          pointcut-ref="thinking"
+          method="interceptThoughts" 
+          arg-names="thoughts" />
+    </aop:aspect>
+  </aop:config>-->
+
+</beans>
