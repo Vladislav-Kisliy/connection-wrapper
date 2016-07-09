@@ -23,8 +23,16 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelOption;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ *
+ * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
+ */
 public class PlainProxyFrontendHandler extends ChannelInboundHandlerAdapter {
+
+    private static final Logger LOG = Logger.getLogger(PlainProxyFrontendHandler.class.getName());
 
     private final String remoteHost;
     private final int remotePort;
@@ -39,25 +47,21 @@ public class PlainProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         final Channel inboundChannel = ctx.channel();
-
         // Start the connection attempt.
         Bootstrap b = new Bootstrap();
         b.group(inboundChannel.eventLoop())
-         .channel(ctx.channel().getClass())
-         .handler(new PlainProxyBackendHandler(inboundChannel))
-         .option(ChannelOption.AUTO_READ, false);
+                .channel(ctx.channel().getClass())
+                .handler(new PlainProxyBackendHandler(inboundChannel))
+                .option(ChannelOption.AUTO_READ, false);
         ChannelFuture f = b.connect(remoteHost, remotePort);
         outboundChannel = f.channel();
-        f.addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future) {
-                if (future.isSuccess()) {
-                    // connection complete start to read first data
-                    inboundChannel.read();
-                } else {
-                    // Close the connection if the connection attempt has failed.
-                    inboundChannel.close();
-                }
+        f.addListener((ChannelFutureListener) (ChannelFuture future) -> {
+            if (future.isSuccess()) {
+                // connection complete start to read first data
+                inboundChannel.read();
+            } else {
+                // Close the connection if the connection attempt has failed.
+                inboundChannel.close();
             }
         });
     }
@@ -65,17 +69,15 @@ public class PlainProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
         if (outboundChannel.isActive()) {
-            outboundChannel.writeAndFlush(msg).addListener(new ChannelFutureListener() {
-                @Override
-                public void operationComplete(ChannelFuture future) {
-                    if (future.isSuccess()) {
-                        // was able to flush out data, start to read the next chunk
-                        ctx.channel().read();
-                    } else {
-                        future.channel().close();
-                    }
-                }
-            });
+            outboundChannel.writeAndFlush(msg)
+                    .addListener((ChannelFutureListener) (ChannelFuture future) -> {
+                        if (future.isSuccess()) {
+                            // was able to flush out data, start to read the next chunk
+                            ctx.channel().read();
+                        } else {
+                            future.channel().close();
+                        }
+                    });
         }
     }
 
@@ -88,7 +90,7 @@ public class PlainProxyFrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        LOG.log(Level.SEVERE, "PlainProxyFrontendHandler issue", cause);
         closeOnFlush(ctx.channel());
     }
 

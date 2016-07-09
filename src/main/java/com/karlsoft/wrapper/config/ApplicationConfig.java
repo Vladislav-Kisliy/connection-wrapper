@@ -17,11 +17,14 @@
 package com.karlsoft.wrapper.config;
 
 /**
- *
- * @author vlad
+ * Defines enabled services.
+ * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
 public interface ApplicationConfig {
-    
+    /**
+     * 
+     * @return 
+     */
     public Boolean isPlainServiceEnabled();
     
 }

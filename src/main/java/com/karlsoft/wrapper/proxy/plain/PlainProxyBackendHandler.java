@@ -20,8 +20,16 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * 
+ * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
+ */
 public class PlainProxyBackendHandler extends ChannelInboundHandlerAdapter {
+
+    private static final Logger LOG = Logger.getLogger(PlainProxyBackendHandler.class.getName());
 
     private final Channel inboundChannel;
 
@@ -36,16 +44,14 @@ public class PlainProxyBackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        inboundChannel.writeAndFlush(msg).addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future) {
-                if (future.isSuccess()) {
-                    ctx.channel().read();
-                } else {
-                    future.channel().close();
-                }
-            }
-        });
+        inboundChannel.writeAndFlush(msg)
+                .addListener((ChannelFutureListener) (ChannelFuture future) -> {
+                    if (future.isSuccess()) {
+                        ctx.channel().read();
+                    } else {
+                        future.channel().close();
+                    }
+                });
     }
 
     @Override
@@ -55,7 +61,7 @@ public class PlainProxyBackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        LOG.log(Level.SEVERE, "PlainProxyBackendHandler issue", cause);
         PlainProxyFrontendHandler.closeOnFlush(ctx.channel());
     }
 }

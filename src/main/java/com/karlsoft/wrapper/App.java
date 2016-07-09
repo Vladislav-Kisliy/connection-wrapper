@@ -1,9 +1,9 @@
 package com.karlsoft.wrapper;
 
-import com.karlsoft.wrapper.api.Service;
 import com.karlsoft.wrapper.config.ApplicationConfigImpl;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import com.karlsoft.wrapper.api.Service;
 
 /**
  * Hello world!

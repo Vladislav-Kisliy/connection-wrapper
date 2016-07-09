@@ -17,11 +17,13 @@
 package com.karlsoft.wrapper.api;
 
 /**
- *
- * @author vlad
+ * To start/stop services. Every wrapper service has to implement this interface
+ * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
 public interface Service {
     
     void start();
+    
+    void stop();
     
 }

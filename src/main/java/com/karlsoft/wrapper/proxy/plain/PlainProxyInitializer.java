@@ -17,9 +17,11 @@ package com.karlsoft.wrapper.proxy.plain;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 
+/**
+ * Initializes connector to remote host.
+ * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
+ */
 public class PlainProxyInitializer extends ChannelInitializer<SocketChannel> {
 
     private final String remoteHost;
