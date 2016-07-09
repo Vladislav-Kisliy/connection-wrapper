@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.karlsoft.wrapper.api;
+package com.karlsoft.wrapper.config;
 
 /**
  *
@@ -22,6 +22,6 @@ package com.karlsoft.wrapper.api;
  */
 public interface ApplicationConfig {
     
-    public String getServerPort();
+    public Boolean isPlainServiceEnabled();
     
 }

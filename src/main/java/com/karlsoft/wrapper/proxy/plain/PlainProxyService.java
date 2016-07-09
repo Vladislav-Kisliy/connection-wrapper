@@ -16,6 +16,7 @@
  */
 package com.karlsoft.wrapper.proxy.plain;
 
+import com.karlsoft.wrapper.api.AbstractService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -24,18 +25,21 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-public final class PlainProxy {
+public final class PlainProxyService extends AbstractService {
 
-    static final int LOCAL_PORT = Integer.parseInt(System.getProperty("localPort", "8443"));
-    
-//    static final String REMOTE_HOST = System.getProperty("remoteHost", "www.google.com");
-//    static final int REMOTE_PORT = Integer.parseInt(System.getProperty("remotePort", "443"));
-    
-    static final String REMOTE_HOST = System.getProperty("remoteHost", "localhost");
-    static final int REMOTE_PORT = Integer.parseInt(System.getProperty("remotePort", "9443"));
+    private final int localPort;
+    private final String remoteHost;
+    private final int remotePort;
 
-    public static void main(String[] args) throws Exception {
-        System.err.println("Proxying *:" + LOCAL_PORT + " to " + REMOTE_HOST + ':' + REMOTE_PORT + " ...");
+    public PlainProxyService(String localPort, String remoteHost, String remotePort) {
+        this.localPort = Integer.parseInt(localPort);
+        this.remoteHost = remoteHost;
+        this.remotePort = Integer.parseInt(remotePort);
+    }
+
+    @Override
+    protected void startService() throws InterruptedException {
+        System.err.println("Proxying *:" + localPort + " to " + remoteHost + ':' + remotePort + " ...");
 
         // Configure the bootstrap.
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
@@ -43,15 +47,14 @@ public final class PlainProxy {
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
-             .channel(NioServerSocketChannel.class)
-             .handler(new LoggingHandler(LogLevel.INFO))
-             .childHandler(new PlainProxyInitializer(REMOTE_HOST, REMOTE_PORT))
-             .childOption(ChannelOption.AUTO_READ, false)
-             .bind(LOCAL_PORT).sync().channel().closeFuture().sync();
+                    .channel(NioServerSocketChannel.class)
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new PlainProxyInitializer(remoteHost, remotePort))
+                    .childOption(ChannelOption.AUTO_READ, false)
+                    .bind(localPort).sync().channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
     }
 }
-

@@ -1,10 +1,8 @@
 package com.karlsoft.wrapper;
 
-import com.karlsoft.wrapper.api.ApplicationConfig;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.karlsoft.wrapper.api.Service;
+import com.karlsoft.wrapper.config.ApplicationConfigImpl;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -13,19 +11,16 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class App {
 
-    @Autowired
-    private ApplicationConfig appConfig;
-
     public static void main(String[] args) {
-        new App().startup();
-        System.out.println("Hello World!");
+        new App().initServices();
 
     }
 
-    private void startup() {
+    private void initServices() {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("spring-application.xml");
-//        Thinker volunteer = (Thinker) ctx.getBean("volunteer");
-//        AppConfig appConfig = (AppConfig) ctx.getBean("appconfig");
-        System.out.println("port =" + appConfig.getServerPort());
+        ApplicationConfigImpl appConfig = (ApplicationConfigImpl) ctx.getBean("appConfig");
+        if (appConfig.isPlainServiceEnabled()) {
+            ((Service) ctx.getBean("plainProxyService")).start();
+        }
     }
 }

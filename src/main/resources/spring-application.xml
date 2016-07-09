@@ -7,7 +7,25 @@
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <!-- bean definitions here -->
-    <bean id="application.applicationConfiguration"
+    <!--Bean to load properties file -->  
+    <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">    
+        <property name="location" value="classpath:application.properties">  <!--reads config.properties file-->  
+        </property>
+    </bean>    
+    <bean id="appConfig" class="com.karlsoft.wrapper.config.ApplicationConfigImpl">
+        <!--reference values read by PropertyPlaceholderConfigurer bean-->  
+        <constructor-arg value="${server.plain.enabled}" />
+        <!--<property name="plainServiceStatus" value="${server.plain.enabled}" />-->  
+<!--        <property name="email" value="${client.plain.connect.port}" />  
+        <property name="URL" value="${client.plain.connect.port}"/>  -->
+    </bean> 
+    <bean id="plainProxyService" class="com.karlsoft.wrapper.proxy.plain.PlainProxyService">
+        <constructor-arg value="${server.plain.listen.port}" />
+        <constructor-arg value="${client.plain.connect.server}" />
+        <constructor-arg value="${client.plain.connect.port}" />
+    </bean>
+    
+    <!--    <bean id="application.applicationConfiguration"
           class="com.karlsoft.wrapper.PropertySourcesPlaceholderConfigurer">
         <property name="locations">
             <list>
@@ -21,8 +39,10 @@
         </property>
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
-    </bean>
-    <!--<bean id="sonnet29" class="com.springinaction.springidol.impl.Sonet29" />-->
+    </bean>-->
+    <!--<context:property-placeholder location="classpath*:my.properties"/>-->
+    
+    <!--<bean id="appconfig" class="com.karlsoft.wrapper.AppConfig" />-->
     <!--    <bean id="poeticDuke" class="com.springinaction.springidol.impl.PoeticJuggler">
         <constructor-arg value="15" />
         <constructor-arg>
@@ -67,11 +87,11 @@
         com.springinaction.springidol.api.Thinker.thinkOfSomething(String)) 
              and args(thoughts)" />
           
-      <aop:before 
-          pointcut-ref="thinking"
-          method="interceptThoughts" 
-          arg-names="thoughts" />
-    </aop:aspect>
-  </aop:config>-->
+        <aop:before 
+            pointcut-ref="thinking"
+            method="interceptThoughts" 
+            arg-names="thoughts" />
+      </aop:aspect>
+    </aop:config>-->
 
 </beans>
