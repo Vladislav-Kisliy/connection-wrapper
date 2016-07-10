@@ -13,8 +13,9 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.karlsoft.wrapper.proxy.plain;
+package com.karlsoft.wrapper.proxy.base;
 
+import com.karlsoft.wrapper.proxy.base.BaseProxyFrontendHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -27,13 +28,13 @@ import java.util.logging.Logger;
  * 
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
-public class PlainProxyBackendHandler extends ChannelInboundHandlerAdapter {
+public class BaseProxyBackendHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger LOG = Logger.getLogger(PlainProxyBackendHandler.class.getName());
+    private static final Logger LOG = Logger.getLogger(BaseProxyBackendHandler.class.getName());
 
     private final Channel inboundChannel;
 
-    public PlainProxyBackendHandler(Channel inboundChannel) {
+    public BaseProxyBackendHandler(Channel inboundChannel) {
         this.inboundChannel = inboundChannel;
     }
 
@@ -56,12 +57,12 @@ public class PlainProxyBackendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        PlainProxyFrontendHandler.closeOnFlush(inboundChannel);
+        BaseProxyFrontendHandler.closeOnFlush(inboundChannel);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         LOG.log(Level.SEVERE, "PlainProxyBackendHandler issue", cause);
-        PlainProxyFrontendHandler.closeOnFlush(ctx.channel());
+        BaseProxyFrontendHandler.closeOnFlush(ctx.channel());
     }
 }

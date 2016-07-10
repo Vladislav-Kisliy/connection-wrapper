@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package com.karlsoft.wrapper.proxy.plain;
+package com.karlsoft.wrapper.proxy.base;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
@@ -30,28 +30,28 @@ import java.util.logging.Logger;
  *
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
-public class PlainProxyFrontendHandler extends ChannelInboundHandlerAdapter {
+public class BaseProxyFrontendHandler extends ChannelInboundHandlerAdapter {
 
-    private static final Logger LOG = Logger.getLogger(PlainProxyFrontendHandler.class.getName());
+    private static final Logger LOG = Logger.getLogger(BaseProxyFrontendHandler.class.getName());
 
-    private final String remoteHost;
-    private final int remotePort;
+    protected final String remoteHost;
+    protected final int remotePort;
 
-    private volatile Channel outboundChannel;
+    protected volatile Channel outboundChannel;
 
-    public PlainProxyFrontendHandler(String remoteHost, int remotePort) {
+    public BaseProxyFrontendHandler(String remoteHost, int remotePort) {
         this.remoteHost = remoteHost;
         this.remotePort = remotePort;
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) {
+    public void channelActive(ChannelHandlerContext ctx) throws Exception  {
         final Channel inboundChannel = ctx.channel();
         // Start the connection attempt.
         Bootstrap b = new Bootstrap();
         b.group(inboundChannel.eventLoop())
                 .channel(ctx.channel().getClass())
-                .handler(new PlainProxyBackendHandler(inboundChannel))
+                .handler(new BaseProxyBackendHandler(inboundChannel))
                 .option(ChannelOption.AUTO_READ, false);
         ChannelFuture f = b.connect(remoteHost, remotePort);
         outboundChannel = f.channel();
@@ -90,14 +90,15 @@ public class PlainProxyFrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        LOG.log(Level.SEVERE, "PlainProxyFrontendHandler issue", cause);
+        LOG.log(Level.SEVERE, this.getClass().getName(), cause);
         closeOnFlush(ctx.channel());
     }
 
     /**
      * Closes the specified channel after all queued write requests are flushed.
+     * @param ch
      */
-    static void closeOnFlush(Channel ch) {
+    public static void closeOnFlush(Channel ch) {
         if (ch.isActive()) {
             ch.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         }

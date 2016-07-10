@@ -16,6 +16,7 @@
  */
 package com.karlsoft.wrapper.proxy.ssl;
 
+import com.karlsoft.wrapper.proxy.base.BaseProxyBackendHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -52,6 +53,6 @@ public class SSLBackendInitializer extends ChannelInitializer<SocketChannel> {
         pipeline.addLast(sslCtx.newHandler(ch.alloc(), remoteHost, remotePort));
 //        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
         // and then business logic.
-        pipeline.addLast(new SSLProxyBackendHandler(inboundChannel));
+        pipeline.addLast(new BaseProxyBackendHandler(inboundChannel));
     }
 }

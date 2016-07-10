@@ -16,6 +16,7 @@
  */
 package com.karlsoft.wrapper.proxy.ssl;
 
+import com.karlsoft.wrapper.proxy.base.BaseProxyFrontendHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -23,6 +24,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -35,18 +37,12 @@ import javax.net.ssl.SSLException;
  *
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
-public class SSLProxyFrontendHandler extends ChannelInboundHandlerAdapter {
+public class SSLProxyFrontendHandler extends BaseProxyFrontendHandler {
 
     private static final Logger LOG = Logger.getLogger(SSLProxyFrontendHandler.class.getName());
 
-    private final String remoteHost;
-    private final Integer remotePort;
-
-    private volatile Channel outboundChannel;
-
     public SSLProxyFrontendHandler(String remoteHost, Integer remotePort) {
-        this.remoteHost = remoteHost;
-        this.remotePort = remotePort;
+        super(remoteHost, remotePort);
     }
 
     @Override
@@ -59,9 +55,10 @@ public class SSLProxyFrontendHandler extends ChannelInboundHandlerAdapter {
         // Start the connection attempt.
         Bootstrap b = new Bootstrap();
         b.group(inboundChannel.eventLoop())
-             .channel(NioSocketChannel.class)
-             .handler(new SSLBackendInitializer(sslCtx, inboundChannel,
-                        remoteHost, remotePort));
+                .channel(ctx.channel().getClass())
+                .handler(new SSLBackendInitializer(sslCtx, inboundChannel,
+                        remoteHost, remotePort))
+                .option(ChannelOption.AUTO_READ, false);
         
         ChannelFuture f = b.connect(remoteHost, remotePort);
         outboundChannel = f.channel();
@@ -76,42 +73,5 @@ public class SSLProxyFrontendHandler extends ChannelInboundHandlerAdapter {
                 inboundChannel.close();
             }
         });
-    }
-
-    @Override
-    public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        if (outboundChannel.isActive()) {
-            outboundChannel.writeAndFlush(msg)
-                    .addListener((ChannelFutureListener) (ChannelFuture future) -> {
-                        if (future.isSuccess()) {
-                            // was able to flush out data, start to read the next chunk
-                            ctx.channel().read();
-                        } else {
-                            future.channel().close();
-                        }
-                    });
-        }
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
-        if (outboundChannel != null) {
-            closeOnFlush(outboundChannel);
-        }
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        LOG.log(Level.SEVERE, "SSLProxyFrontendHandler issue", cause);
-        closeOnFlush(ctx.channel());
-    }
-
-    /**
-     * Closes the specified channel after all queued write requests are flushed.
-     */
-    static void closeOnFlush(Channel ch) {
-        if (ch.isActive()) {
-            ch.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-        }
     }
 }

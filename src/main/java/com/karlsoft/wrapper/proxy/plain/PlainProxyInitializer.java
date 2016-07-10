@@ -15,6 +15,7 @@
  */
 package com.karlsoft.wrapper.proxy.plain;
 
+import com.karlsoft.wrapper.proxy.base.BaseProxyFrontendHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 
@@ -36,6 +37,6 @@ public class PlainProxyInitializer extends ChannelInitializer<SocketChannel> {
     public void initChannel(SocketChannel ch) {
         ch.pipeline().addLast(
 //                new LoggingHandler(LogLevel.INFO),
-                new PlainProxyFrontendHandler(remoteHost, remotePort));
+                new BaseProxyFrontendHandler(remoteHost, remotePort));
     }
 }
