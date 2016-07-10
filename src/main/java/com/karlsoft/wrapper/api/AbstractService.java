@@ -16,59 +16,60 @@
  */
 package com.karlsoft.wrapper.api;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * First simple implementation of Service interface.
- * Prints messages to log before and after service starting.
+ * First simple implementation of Service interface. Prints messages to log
+ * before and after service starting.
+ *
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
 public abstract class AbstractService implements Service {
-    
+
     protected String serviceName = "UKNOWN";
     private static final Logger LOG = Logger.getLogger(AbstractService.class.getName());
-    
+
     @Override
     public void start() {
         beforeStart();
         try {
             startService();
-        } catch (InterruptedException ex) {
+        } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Start service problem", ex);
         }
         afterStart();
     }
-    
+
     @Override
     public void stop() {
         beforeStop();
         try {
             stopService();
-        } catch (InterruptedException ex) {
-            LOG.log(Level.SEVERE, "Start service problem", ex);
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "Stop service problem", ex);
         }
         afterStop();
     }
-    
-    
+
     private void beforeStart() {
         LOG.log(Level.INFO, "Starting {0} service", serviceName);
     }
-    
+
     private void afterStart() {
         LOG.log(Level.INFO, "Started {0} service", serviceName);
     }
-    
+
     protected void beforeStop() {
         LOG.log(Level.INFO, "Stoping {0} service", serviceName);
     }
-    
+
     private void afterStop() {
         LOG.log(Level.INFO, "Stopped {0} service", serviceName);
     }
-    
-    protected abstract void startService() throws InterruptedException;
-    
-    protected abstract void stopService() throws InterruptedException;
+
+    protected abstract void startService() throws Exception;
+
+    protected abstract void stopService() throws Exception;
 }

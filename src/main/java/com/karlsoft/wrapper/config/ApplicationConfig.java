@@ -26,5 +26,10 @@ public interface ApplicationConfig {
      * @return 
      */
     public Boolean isPlainServiceEnabled();
+    /**
+     * 
+     * @return 
+     */
+    public Boolean isSSLServiceEnabled();
     
 }

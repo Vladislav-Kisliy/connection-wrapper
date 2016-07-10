@@ -23,9 +23,11 @@ package com.karlsoft.wrapper.config;
 public class ApplicationConfigImpl implements ApplicationConfig {
 
     private final String plainServiceStatus;
+    private final String sslServiceStatus;
 
-    public ApplicationConfigImpl(String plainServiceStatus) {
+    public ApplicationConfigImpl(String plainServiceStatus, String sslServiceStatus) {
         this.plainServiceStatus = plainServiceStatus;
+        this.sslServiceStatus = sslServiceStatus;
     }
 
     @Override
@@ -33,4 +35,8 @@ public class ApplicationConfigImpl implements ApplicationConfig {
         return "true".equalsIgnoreCase(plainServiceStatus);
     }
 
+    @Override
+    public Boolean isSSLServiceEnabled() {
+        return "true".equalsIgnoreCase(sslServiceStatus);
+    }
 }

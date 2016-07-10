@@ -15,6 +15,7 @@
     <bean id="appConfig" class="com.karlsoft.wrapper.config.ApplicationConfigImpl">
         <!--reference values read by PropertyPlaceholderConfigurer bean-->  
         <constructor-arg value="${server.plain.enabled}" />
+        <constructor-arg value="${server.ssl.enabled}" />
         <!--<property name="plainServiceStatus" value="${server.plain.enabled}" />-->  
 <!--        <property name="email" value="${client.plain.connect.port}" />  
         <property name="URL" value="${client.plain.connect.port}"/>  -->
@@ -23,6 +24,11 @@
         <constructor-arg value="${server.plain.listen.port}" />
         <constructor-arg value="${client.plain.connect.server}" />
         <constructor-arg value="${client.plain.connect.port}" />
+    </bean>
+    <bean id="sslProxyService" class="com.karlsoft.wrapper.proxy.ssl.SSLProxyService">
+        <constructor-arg value="${server.ssl.listen.port}" />
+        <constructor-arg value="${client.ssl.connect.server}" />
+        <constructor-arg value="${client.ssl.connect.port}" />
     </bean>
     
     <!--    <bean id="application.applicationConfiguration"
