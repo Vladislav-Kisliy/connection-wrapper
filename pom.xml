@@ -13,6 +13,7 @@
         <software.junit.version>4.12</software.junit.version>
         <software.netty.version>4.1.1.Final</software.netty.version>
         <spring.version>4.3.0.RELEASE</spring.version>
+        <guava.version>19.0</guava.version>
         <mainClass>com.karlsoft.wrapper.Application</mainClass>
     </properties>
     <dependencies>
@@ -32,6 +33,11 @@
             <artifactId>junit</artifactId>
             <version>${software.junit.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
     </dependencies>
     <build>
@@ -115,7 +121,7 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-<!--                    <compilerArguments>
+                    <!--                    <compilerArguments>
                         <bootclasspath>${sun.boot.class.path}${path.separator}${java.home}/lib/jfxrt.jar</bootclasspath>
                     </compilerArguments>-->
                 </configuration>

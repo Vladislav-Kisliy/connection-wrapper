@@ -9,16 +9,16 @@
     <!-- bean definitions here -->
     <!--Bean to load properties file -->  
     <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">    
-        <property name="location" value="classpath:application.properties">  <!--reads config.properties file-->  
+        <property name="location" value="classpath:application.properties">  <!--reads application.properties file-->  
         </property>
     </bean>    
     <bean id="appConfig" class="com.karlsoft.wrapper.config.ApplicationConfigImpl">
         <!--reference values read by PropertyPlaceholderConfigurer bean-->  
         <constructor-arg value="${server.plain.enabled}" />
         <constructor-arg value="${server.ssl.enabled}" />
-        <!--<property name="plainServiceStatus" value="${server.plain.enabled}" />-->  
-<!--        <property name="email" value="${client.plain.connect.port}" />  
-        <property name="URL" value="${client.plain.connect.port}"/>  -->
+        <constructor-arg value="${server.socks4.enabled}" />
+        <constructor-arg value="${server.socks5.enabled}" />
+        <constructor-arg value="${server.multiplier.enabled}" />
     </bean> 
     <bean id="plainProxyService" class="com.karlsoft.wrapper.proxy.plain.PlainProxyService">
         <constructor-arg value="${server.plain.listen.port}" />
@@ -29,6 +29,25 @@
         <constructor-arg value="${server.ssl.listen.port}" />
         <constructor-arg value="${client.ssl.connect.server}" />
         <constructor-arg value="${client.ssl.connect.port}" />
+    </bean>
+    <bean id="socks4ProxyService" class="com.karlsoft.wrapper.proxy.socks.SocksProxyService">
+        <constructor-arg value="${server.socks4.listen.port}" />
+        <constructor-arg value="${client.socks4.connect.server}" />
+        <constructor-arg value="${client.socks4.connect.port}" />
+    </bean>
+<!--    <bean id="socks5ProxyService" class="com.karlsoft.wrapper.proxy.ssl.SSLProxyService">
+        <constructor-arg value="${server.ssl.listen.port}" />
+        <constructor-arg value="${client.ssl.connect.server}" />
+        <constructor-arg value="${client.ssl.connect.port}" />
+    </bean>-->
+        <bean id="multiplierProxyService" class="com.karlsoft.wrapper.proxy.multi.MultiplierProxyService">
+        <constructor-arg value="${server.multiplier.listen.port}" />
+        <constructor-arg type="java.lang.Object">
+            <bean class="org.springframework.util.StringUtils" factory-method="tokenizeToStringArray">
+                <constructor-arg type="java.lang.String" value="${client.multiplier.connect.servers}"/>
+                <constructor-arg type="java.lang.String" value=","/>
+            </bean>
+        </constructor-arg>
     </bean>
     
     <!--    <bean id="application.applicationConfiguration"

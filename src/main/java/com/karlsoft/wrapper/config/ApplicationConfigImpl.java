@@ -24,19 +24,44 @@ public class ApplicationConfigImpl implements ApplicationConfig {
 
     private final String plainServiceStatus;
     private final String sslServiceStatus;
+    private final String socks4ServiceStatus;
+    private final String socks5ServiceStatus;
+    private final String multiplierServiceStatus;
 
-    public ApplicationConfigImpl(String plainServiceStatus, String sslServiceStatus) {
+    public ApplicationConfigImpl(String plainServiceStatus, String sslServiceStatus, String socks4ServiceStatus, String socks5ServiceStatus, String multiplierServiceStatus) {
         this.plainServiceStatus = plainServiceStatus;
         this.sslServiceStatus = sslServiceStatus;
+        this.socks4ServiceStatus = socks4ServiceStatus;
+        this.socks5ServiceStatus = socks5ServiceStatus;
+        this.multiplierServiceStatus = multiplierServiceStatus;
     }
 
     @Override
     public Boolean isPlainServiceEnabled() {
-        return "true".equalsIgnoreCase(plainServiceStatus);
+        return checkString(plainServiceStatus);
     }
 
     @Override
     public Boolean isSSLServiceEnabled() {
-        return "true".equalsIgnoreCase(sslServiceStatus);
+        return checkString(sslServiceStatus);
+    }
+
+    @Override
+    public Boolean isSocks4ServiceEnabled() {
+        return checkString(socks4ServiceStatus);
+    }
+
+    @Override
+    public Boolean isSocks5ServiceEnabled() {
+        return checkString(socks5ServiceStatus);
+    }
+    
+    @Override
+    public Boolean isMultiplierServiceEnabled() {
+        return checkString(multiplierServiceStatus);
+    }
+    
+    private Boolean checkString(String string) {
+       return "true".equalsIgnoreCase(string);
     }
 }

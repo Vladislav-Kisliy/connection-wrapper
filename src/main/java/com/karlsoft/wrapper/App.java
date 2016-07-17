@@ -6,8 +6,9 @@ import com.karlsoft.wrapper.api.Service;
 import com.karlsoft.wrapper.config.ApplicationConfig;
 
 /**
- * Hello world!
+ * Start up application
  *
+ * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
 public class App {
 
@@ -23,6 +24,15 @@ public class App {
         }
         if (appConfig.isSSLServiceEnabled()) {
             ((Service) ctx.getBean("sslProxyService")).start();
+        }
+        if (appConfig.isSocks4ServiceEnabled()) {
+            ((Service) ctx.getBean("socks4ProxyService")).start();
+        }
+        if (appConfig.isSocks5ServiceEnabled()) {
+            ((Service) ctx.getBean("socks5ProxyService")).start();
+        }
+        if (appConfig.isMultiplierServiceEnabled()) {
+            ((Service) ctx.getBean("multiplierProxyService")).start();
         }
     }
 }

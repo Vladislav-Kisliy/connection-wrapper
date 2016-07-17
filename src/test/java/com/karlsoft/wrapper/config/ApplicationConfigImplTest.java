@@ -28,22 +28,22 @@ import static org.junit.Assert.*;
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
 public class ApplicationConfigImplTest {
-    
+
     public ApplicationConfigImplTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -53,20 +53,35 @@ public class ApplicationConfigImplTest {
      */
     @Test
     public void testAllServiceEnabled() {
-        ApplicationConfigImpl instance = new ApplicationConfigImpl("true", "true");
+        ApplicationConfigImpl instance = new ApplicationConfigImpl("true", "true", "true",
+                "true", "true");
         assertTrue(instance.isPlainServiceEnabled());
         assertTrue(instance.isSSLServiceEnabled());
-        
-        instance = new ApplicationConfigImpl("true1", "true");
+        assertTrue(instance.isSocks4ServiceEnabled());
+        assertTrue(instance.isSocks5ServiceEnabled());
+        assertTrue(instance.isMultiplierServiceEnabled());
+
+        instance = new ApplicationConfigImpl("true1", "true", "true", "true",
+                "true");
         assertFalse(instance.isPlainServiceEnabled());
         assertTrue(instance.isSSLServiceEnabled());
-        
-        instance = new ApplicationConfigImpl("", "");
+        assertTrue(instance.isSocks4ServiceEnabled());
+        assertTrue(instance.isSocks5ServiceEnabled());
+        assertTrue(instance.isMultiplierServiceEnabled());
+
+        instance = new ApplicationConfigImpl("", "", null, null, null);
         assertFalse(instance.isPlainServiceEnabled());
         assertFalse(instance.isSSLServiceEnabled());
-        
-        instance = new ApplicationConfigImpl("false", "false");
+        assertFalse(instance.isSocks4ServiceEnabled());
+        assertFalse(instance.isSocks5ServiceEnabled());
+        assertFalse(instance.isMultiplierServiceEnabled());
+
+        instance = new ApplicationConfigImpl("false", "false", "false", "false",
+                "false");
         assertFalse(instance.isPlainServiceEnabled());
         assertFalse(instance.isSSLServiceEnabled());
+        assertFalse(instance.isSocks4ServiceEnabled());
+        assertFalse(instance.isSocks5ServiceEnabled());
+        assertFalse(instance.isMultiplierServiceEnabled());
     }
 }

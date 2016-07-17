@@ -14,36 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.karlsoft.wrapper.config;
+package com.karlsoft.wrapper.examples;
 
-/**
- * Defines enabled services.
- * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
- */
-public interface ApplicationConfig {
-    /**
-     * 
-     * @return 
-     */
-    public Boolean isPlainServiceEnabled();
-    /**
-     * 
-     * @return 
-     */
-    public Boolean isSSLServiceEnabled();
-    /**
-     * 
-     * @return 
-     */
-    public Boolean isSocks4ServiceEnabled();
-    /**
-     * 
-     * @return 
-     */
-    public Boolean isSocks5ServiceEnabled();
-    /**
-     * 
-     * @return 
-     */
-    public Boolean isMultiplierServiceEnabled();
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+
+public class EchoServerHandler extends ChannelInboundHandlerAdapter { // (1)
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)
+        ctx.write(msg); // (1)
+        ctx.flush(); // (2)
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
+        // Close the connection when an exception is raised.
+        cause.printStackTrace();
+        ctx.close();
+    }
 }

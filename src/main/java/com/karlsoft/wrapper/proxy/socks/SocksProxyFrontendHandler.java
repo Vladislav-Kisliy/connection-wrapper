@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.karlsoft.wrapper.proxy.ssl;
+package com.karlsoft.wrapper.proxy.socks;
 
 import com.karlsoft.wrapper.proxy.base.BaseProxyFrontendHandler;
 import io.netty.bootstrap.Bootstrap;
@@ -23,9 +23,6 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.SSLException;
@@ -34,39 +31,35 @@ import javax.net.ssl.SSLException;
  *
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
-public class SSLProxyFrontendHandler extends BaseProxyFrontendHandler {
+public class SocksProxyFrontendHandler extends BaseProxyFrontendHandler {
 
-    private static final Logger LOG = Logger.getLogger(SSLProxyFrontendHandler.class.getName());
+    private static final Logger LOG = Logger.getLogger(SocksProxyFrontendHandler.class.getName());
 
-    public SSLProxyFrontendHandler(String remoteHost, Integer remotePort) {
+    public SocksProxyFrontendHandler(String remoteHost, Integer remotePort) {
         super(remoteHost, remotePort);
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws SSLException {
         final Channel inboundChannel = ctx.channel();
-        // Configure SSL.
-        SslContext sslCtx = SslContextBuilder.forClient()
-                .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
-        LOG.log(Level.INFO, "SSLProxyFrontendHandler set up ssl");
         // Start the connection attempt.
         Bootstrap b = new Bootstrap();
         b.group(inboundChannel.eventLoop())
                 .channel(ctx.channel().getClass())
-                .handler(new SSLBackendInitializer(sslCtx, inboundChannel,
+                .handler(new SocksBackendInitializer(inboundChannel,
                         remoteHost, remotePort))
                 .option(ChannelOption.AUTO_READ, false);
-        
+
         ChannelFuture f = b.connect(remoteHost, remotePort);
         outboundChannel = f.channel();
         f.addListener((ChannelFutureListener) (ChannelFuture future) -> {
             if (future.isSuccess()) {
                 // connection complete start to read first data
-                LOG.log(Level.SEVERE, "SSLProxyFrontendHandler connect success");
+                LOG.log(Level.SEVERE, "SocksProxyFrontendHandler connect success");
                 inboundChannel.read();
             } else {
                 // Close the connection if the connection attempt has failed.
-                LOG.log(Level.SEVERE, "SSLProxyFrontendHandler connect failure");
+                LOG.log(Level.SEVERE, "SocksProxyFrontendHandler connect failure");
                 inboundChannel.close();
             }
         });
