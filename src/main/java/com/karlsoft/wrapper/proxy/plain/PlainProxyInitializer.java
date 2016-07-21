@@ -15,28 +15,28 @@
  */
 package com.karlsoft.wrapper.proxy.plain;
 
+import com.google.common.net.HostAndPort;
 import com.karlsoft.wrapper.proxy.base.BaseProxyFrontendHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 
 /**
  * Initializes connector to remote host.
+ *
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
 public class PlainProxyInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final String remoteHost;
-    private final int remotePort;
+    private final HostAndPort targetServer;
 
-    public PlainProxyInitializer(String remoteHost, int remotePort) {
-        this.remoteHost = remoteHost;
-        this.remotePort = remotePort;
+    public PlainProxyInitializer(HostAndPort targetServer) {
+        this.targetServer = targetServer;
     }
 
     @Override
     public void initChannel(SocketChannel ch) {
         ch.pipeline().addLast(
-//                new LoggingHandler(LogLevel.INFO),
-                new BaseProxyFrontendHandler(remoteHost, remotePort));
+                //                new LoggingHandler(LogLevel.INFO),
+                new BaseProxyFrontendHandler(targetServer));
     }
 }

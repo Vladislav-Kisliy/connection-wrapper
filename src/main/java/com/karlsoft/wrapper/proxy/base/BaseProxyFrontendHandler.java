@@ -15,6 +15,7 @@
  */
 package com.karlsoft.wrapper.proxy.base;
 
+import com.google.common.net.HostAndPort;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -34,15 +35,14 @@ public class BaseProxyFrontendHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = Logger.getLogger(BaseProxyFrontendHandler.class.getName());
 
-    protected final String remoteHost;
-    protected final int remotePort;
+    protected final HostAndPort targetServer;
 
     protected volatile Channel outboundChannel;
 
-    public BaseProxyFrontendHandler(String remoteHost, int remotePort) {
-        this.remoteHost = remoteHost;
-        this.remotePort = remotePort;
+    public BaseProxyFrontendHandler(HostAndPort targetServer) {
+        this.targetServer = targetServer;
     }
+
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception  {
@@ -53,7 +53,7 @@ public class BaseProxyFrontendHandler extends ChannelInboundHandlerAdapter {
                 .channel(ctx.channel().getClass())
                 .handler(new BaseProxyBackendHandler(inboundChannel))
                 .option(ChannelOption.AUTO_READ, false);
-        ChannelFuture f = b.connect(remoteHost, remotePort);
+        ChannelFuture f = b.connect(targetServer.getHostText(), targetServer.getPort());
         outboundChannel = f.channel();
         f.addListener((ChannelFutureListener) (ChannelFuture future) -> {
             if (future.isSuccess()) {

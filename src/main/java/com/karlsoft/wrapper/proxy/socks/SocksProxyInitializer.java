@@ -15,6 +15,7 @@
  */
 package com.karlsoft.wrapper.proxy.socks;
 
+import com.google.common.net.HostAndPort;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 
@@ -23,18 +24,19 @@ import io.netty.channel.socket.SocketChannel;
  */
 public class SocksProxyInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final String remoteHost;
-    private final Integer remotePort;
+    private final HostAndPort socksProxy;
+    private final HostAndPort targetHost;
 
-    public SocksProxyInitializer(String remoteHost, int remotePort) {
-        this.remoteHost = remoteHost;
-        this.remotePort = remotePort;
+    public SocksProxyInitializer(HostAndPort socksProxy, HostAndPort targetHost) {
+        this.socksProxy = socksProxy;
+        this.targetHost = targetHost;
     }
+
 
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline().addLast(
 //                new LoggingHandler(LogLevel.INFO),
-                new SocksProxyFrontendHandler(remoteHost, remotePort));
+                new SocksProxyFrontendHandler(socksProxy, targetHost));
     }
 }

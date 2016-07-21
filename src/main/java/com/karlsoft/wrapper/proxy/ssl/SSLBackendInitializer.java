@@ -16,6 +16,7 @@
  */
 package com.karlsoft.wrapper.proxy.ssl;
 
+import com.google.common.net.HostAndPort;
 import com.karlsoft.wrapper.proxy.base.BaseProxyBackendHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -31,14 +32,12 @@ public class SSLBackendInitializer extends ChannelInitializer<SocketChannel> {
 
     private final SslContext sslCtx;
     private final Channel inboundChannel;
-    private final String remoteHost;
-    private final Integer remotePort;
+    private final HostAndPort targetServer;
 
-    public SSLBackendInitializer(SslContext sslCtx, Channel inboundChannel, String remoteHost, Integer remotePort) {
+    public SSLBackendInitializer(SslContext sslCtx, Channel inboundChannel, HostAndPort targetServer) {
         this.sslCtx = sslCtx;
         this.inboundChannel = inboundChannel;
-        this.remoteHost = remoteHost;
-        this.remotePort = remotePort;
+        this.targetServer = targetServer;
     }
 
     @Override
@@ -50,7 +49,7 @@ public class SSLBackendInitializer extends ChannelInitializer<SocketChannel> {
         // and accept any invalid certificates in the client side.
         // You will need something more complicated to identify both
         // and server in the real world.
-        pipeline.addLast(sslCtx.newHandler(ch.alloc(), remoteHost, remotePort));
+        pipeline.addLast(sslCtx.newHandler(ch.alloc(), targetServer.getHostText(), targetServer.getPort()));
 //        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
         // and then business logic.
         pipeline.addLast(new BaseProxyBackendHandler(inboundChannel));

@@ -16,6 +16,7 @@
  */
 package com.karlsoft.wrapper.proxy.ssl;
 
+import com.google.common.net.HostAndPort;
 import com.karlsoft.wrapper.proxy.base.BaseProxyFrontendHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -38,8 +39,8 @@ public class SSLProxyFrontendHandler extends BaseProxyFrontendHandler {
 
     private static final Logger LOG = Logger.getLogger(SSLProxyFrontendHandler.class.getName());
 
-    public SSLProxyFrontendHandler(String remoteHost, Integer remotePort) {
-        super(remoteHost, remotePort);
+    public SSLProxyFrontendHandler(HostAndPort targetServer) {
+        super(targetServer);
     }
 
     @Override
@@ -54,10 +55,10 @@ public class SSLProxyFrontendHandler extends BaseProxyFrontendHandler {
         b.group(inboundChannel.eventLoop())
                 .channel(ctx.channel().getClass())
                 .handler(new SSLBackendInitializer(sslCtx, inboundChannel,
-                        remoteHost, remotePort))
+                        targetServer))
                 .option(ChannelOption.AUTO_READ, false);
         
-        ChannelFuture f = b.connect(remoteHost, remotePort);
+        ChannelFuture f = b.connect(targetServer.getHostText(), targetServer.getPort());
         outboundChannel = f.channel();
         f.addListener((ChannelFutureListener) (ChannelFuture future) -> {
             if (future.isSuccess()) {

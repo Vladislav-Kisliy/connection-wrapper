@@ -16,6 +16,7 @@
  */
 package com.karlsoft.wrapper.proxy.plain;
 
+import com.google.common.net.HostAndPort;
 import com.karlsoft.wrapper.api.AbstractService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
@@ -39,27 +40,25 @@ public final class PlainProxyService extends AbstractService {
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
     private final Integer localPort;
-    private final String remoteHost;
-    private final Integer remotePort;
+    private final HostAndPort targetServer;
 
-    public PlainProxyService(String localPort, String remoteHost, String remotePort) {
+    public PlainProxyService(String localPort, String remoteHost) {
         this.localPort = Integer.parseInt(localPort);
-        this.remoteHost = remoteHost;
-        this.remotePort = Integer.parseInt(remotePort);
+        this.targetServer = HostAndPort.fromString(remoteHost);
         serviceName = "Plain proxy";
     }
 
     @Override
     protected void startService() throws InterruptedException {
-        LOG.log(Level.INFO, "Proxying *:{0} to {1}:{2}", 
-                new Object[]{localPort.toString(), remoteHost, remotePort.toString()});
+        LOG.log(Level.INFO, "Proxying *:{0} to {1}", 
+                new Object[]{localPort.toString(), targetServer});
         // Configure the bootstrap.
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new PlainProxyInitializer(remoteHost, remotePort))
+                    .childHandler(new PlainProxyInitializer(targetServer))
                     .childOption(ChannelOption.AUTO_READ, false)
                     .bind(localPort).sync()
                     .channel().closeFuture().sync();

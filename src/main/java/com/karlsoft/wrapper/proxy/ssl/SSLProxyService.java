@@ -15,6 +15,7 @@
  */
 package com.karlsoft.wrapper.proxy.ssl;
 
+import com.google.common.net.HostAndPort;
 import com.karlsoft.wrapper.api.AbstractService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
@@ -37,27 +38,25 @@ public final class SSLProxyService  extends AbstractService {
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
     private final Integer localPort;
-    private final String remoteHost;
-    private final Integer remotePort;
+    private final HostAndPort targetServer;
 
-    public SSLProxyService(String localPort, String remoteHost, String remotePort) {
+    public SSLProxyService(String localPort, String targetServer) {
         this.localPort = Integer.parseInt(localPort);
-        this.remoteHost = remoteHost;
-        this.remotePort = Integer.parseInt(remotePort);
+        this.targetServer = HostAndPort.fromString(targetServer);
         serviceName = "SSL proxy";
     }
     
     @Override
     protected void startService() throws SSLException, InterruptedException {
-        LOG.log(Level.INFO, "Proxying *:{0} to {1}:{2}", 
-                new Object[]{localPort.toString(), remoteHost, remotePort.toString()});
+        LOG.log(Level.INFO, "Proxying *:{0} to {1}", 
+                new Object[]{localPort.toString(), targetServer});
         // Configure the bootstrap.
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new SSLProxyInitializer(remoteHost, remotePort))
+                    .childHandler(new SSLProxyInitializer(targetServer))
                     .childOption(ChannelOption.AUTO_READ, false)
                     .bind(localPort).sync()
                     .channel().closeFuture().sync();

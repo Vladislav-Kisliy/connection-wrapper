@@ -16,6 +16,7 @@
  */
 package com.karlsoft.wrapper.proxy.socks;
 
+import com.google.common.net.HostAndPort;
 import com.karlsoft.wrapper.proxy.base.BaseProxyBackendHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -34,13 +35,12 @@ import java.net.InetSocketAddress;
 public class SocksBackendInitializer extends ChannelInitializer<SocketChannel> {
 
     private final Channel inboundChannel;
-    private final String remoteHost;
-    private final Integer remotePort;
 
-    public SocksBackendInitializer(Channel inboundChannel, String remoteHost, Integer remotePort) {
+    private final HostAndPort socksProxy;
+
+    public SocksBackendInitializer(Channel inboundChannel, HostAndPort socksProxy) {
         this.inboundChannel = inboundChannel;
-        this.remoteHost = remoteHost;
-        this.remotePort = remotePort;
+        this.socksProxy = socksProxy;
     }
 
     @Override
@@ -52,7 +52,8 @@ public class SocksBackendInitializer extends ChannelInitializer<SocketChannel> {
         // and accept any invalid certificates in the client side.
         // You will need something more complicated to identify both
         // and server in the real world.
-        pipeline.addLast(new Socks4ProxyHandler(new InetSocketAddress(remoteHost, remotePort)));
+        pipeline.addFirst(new Socks4ProxyHandler(
+                new InetSocketAddress(socksProxy.getHostText(), socksProxy.getPort())));
         pipeline.addLast(new LoggingHandler(LogLevel.INFO));
         // and then business logic.
         pipeline.addLast(new BaseProxyBackendHandler(inboundChannel));

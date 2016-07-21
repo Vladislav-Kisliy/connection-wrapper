@@ -16,6 +16,7 @@
  */
 package com.karlsoft.wrapper.proxy.socks;
 
+import com.google.common.net.HostAndPort;
 import com.karlsoft.wrapper.proxy.base.BaseProxyFrontendHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -34,9 +35,11 @@ import javax.net.ssl.SSLException;
 public class SocksProxyFrontendHandler extends BaseProxyFrontendHandler {
 
     private static final Logger LOG = Logger.getLogger(SocksProxyFrontendHandler.class.getName());
+    private final HostAndPort socksProxy;
 
-    public SocksProxyFrontendHandler(String remoteHost, Integer remotePort) {
-        super(remoteHost, remotePort);
+    public SocksProxyFrontendHandler(HostAndPort socksProxy, HostAndPort targetServer) {
+        super(targetServer);
+        this.socksProxy = socksProxy;
     }
 
     @Override
@@ -46,11 +49,10 @@ public class SocksProxyFrontendHandler extends BaseProxyFrontendHandler {
         Bootstrap b = new Bootstrap();
         b.group(inboundChannel.eventLoop())
                 .channel(ctx.channel().getClass())
-                .handler(new SocksBackendInitializer(inboundChannel,
-                        remoteHost, remotePort))
+                .handler(new SocksBackendInitializer(inboundChannel, socksProxy))
                 .option(ChannelOption.AUTO_READ, false);
 
-        ChannelFuture f = b.connect(remoteHost, remotePort);
+        ChannelFuture f = b.connect(targetServer.getHostText(), targetServer.getPort());
         outboundChannel = f.channel();
         f.addListener((ChannelFutureListener) (ChannelFuture future) -> {
             if (future.isSuccess()) {

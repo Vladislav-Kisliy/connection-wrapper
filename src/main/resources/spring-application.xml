@@ -23,17 +23,15 @@
     <bean id="plainProxyService" class="com.karlsoft.wrapper.proxy.plain.PlainProxyService">
         <constructor-arg value="${server.plain.listen.port}" />
         <constructor-arg value="${client.plain.connect.server}" />
-        <constructor-arg value="${client.plain.connect.port}" />
     </bean>
     <bean id="sslProxyService" class="com.karlsoft.wrapper.proxy.ssl.SSLProxyService">
         <constructor-arg value="${server.ssl.listen.port}" />
         <constructor-arg value="${client.ssl.connect.server}" />
-        <constructor-arg value="${client.ssl.connect.port}" />
     </bean>
     <bean id="socks4ProxyService" class="com.karlsoft.wrapper.proxy.socks.SocksProxyService">
         <constructor-arg value="${server.socks4.listen.port}" />
         <constructor-arg value="${client.socks4.connect.server}" />
-        <constructor-arg value="${client.socks4.connect.port}" />
+        <constructor-arg value="${client.socks4.target.server}" />
     </bean>
 <!--    <bean id="socks5ProxyService" class="com.karlsoft.wrapper.proxy.ssl.SSLProxyService">
         <constructor-arg value="${server.ssl.listen.port}" />

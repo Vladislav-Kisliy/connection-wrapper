@@ -15,6 +15,7 @@
  */
 package com.karlsoft.wrapper.proxy.ssl;
 
+import com.google.common.net.HostAndPort;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 
@@ -23,18 +24,17 @@ import io.netty.channel.socket.SocketChannel;
  */
 public class SSLProxyInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final String remoteHost;
-    private final Integer remotePort;
+    private final HostAndPort targetServer;
 
-    public SSLProxyInitializer(String remoteHost, int remotePort) {
-        this.remoteHost = remoteHost;
-        this.remotePort = remotePort;
+    public SSLProxyInitializer(HostAndPort targetServer) {
+        this.targetServer = targetServer;
     }
+    
 
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline().addLast(
 //                new LoggingHandler(LogLevel.INFO),
-                new SSLProxyFrontendHandler(remoteHost, remotePort));
+                new SSLProxyFrontendHandler(targetServer));
     }
 }
