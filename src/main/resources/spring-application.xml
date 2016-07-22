@@ -19,6 +19,7 @@
         <constructor-arg value="${server.socks4.enabled}" />
         <constructor-arg value="${server.socks5.enabled}" />
         <constructor-arg value="${server.multiplier.enabled}" />
+        <constructor-arg value="${server.socks5.auth.enabled}" />
     </bean> 
     <bean id="plainProxyService" class="com.karlsoft.wrapper.proxy.plain.PlainProxyService">
         <constructor-arg value="${server.plain.listen.port}" />
@@ -30,14 +31,14 @@
     </bean>
     <bean id="socks4ProxyService" class="com.karlsoft.wrapper.proxy.socks.SocksProxyService">
         <constructor-arg value="${server.socks4.listen.port}" />
-        <constructor-arg value="${client.socks4.connect.server}" />
+        <constructor-arg value="${client.socks4.socks.server}" />
         <constructor-arg value="${client.socks4.target.server}" />
     </bean>
     <bean id="socks5ProxyService" class="com.karlsoft.wrapper.proxy.socks.SocksProxyService">
         <constructor-arg value="${server.socks5.listen.port}" />
-        <constructor-arg value="${client.socks5.connect.server}" />
+        <constructor-arg value="${client.socks5.socks.server}" />
         <constructor-arg value="${client.socks5.target.server}" />
-        <constructor-arg type="java.lang.Boolean" value="Boolean.TRUE" />
+        <constructor-arg value="true" />
     </bean>
     <bean id="multiplierProxyService" class="com.karlsoft.wrapper.proxy.multi.MultiplierProxyService">
         <constructor-arg value="${server.multiplier.listen.port}" />
