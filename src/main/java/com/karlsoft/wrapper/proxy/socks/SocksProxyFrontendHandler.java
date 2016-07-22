@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import javax.net.ssl.SSLException;
 
 /**
+ * Creates a new channel for every client
  *
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
@@ -36,10 +37,13 @@ public class SocksProxyFrontendHandler extends BaseProxyFrontendHandler {
 
     private static final Logger LOG = Logger.getLogger(SocksProxyFrontendHandler.class.getName());
     private final HostAndPort socksProxy;
+    private final Mode serviceMode;
 
-    public SocksProxyFrontendHandler(HostAndPort socksProxy, HostAndPort targetServer) {
+    public SocksProxyFrontendHandler(HostAndPort socksProxy, HostAndPort targetServer,
+            Mode serviceMode) {
         super(targetServer);
         this.socksProxy = socksProxy;
+        this.serviceMode = serviceMode;
     }
 
     @Override
@@ -49,7 +53,8 @@ public class SocksProxyFrontendHandler extends BaseProxyFrontendHandler {
         Bootstrap b = new Bootstrap();
         b.group(inboundChannel.eventLoop())
                 .channel(ctx.channel().getClass())
-                .handler(new SocksBackendInitializer(inboundChannel, socksProxy))
+                .handler(new SocksBackendInitializer(inboundChannel, socksProxy,
+                        serviceMode))
                 .option(ChannelOption.AUTO_READ, false);
 
         ChannelFuture f = b.connect(targetServer.getHostText(), targetServer.getPort());

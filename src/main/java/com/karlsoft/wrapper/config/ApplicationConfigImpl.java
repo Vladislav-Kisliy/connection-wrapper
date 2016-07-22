@@ -26,13 +26,15 @@ public class ApplicationConfigImpl implements ApplicationConfig {
     private final String sslServiceStatus;
     private final String socks4ServiceStatus;
     private final String socks5ServiceStatus;
+    private final String socks5ServiceAuthStatus;
     private final String multiplierServiceStatus;
 
-    public ApplicationConfigImpl(String plainServiceStatus, String sslServiceStatus, String socks4ServiceStatus, String socks5ServiceStatus, String multiplierServiceStatus) {
+    public ApplicationConfigImpl(String plainServiceStatus, String sslServiceStatus, String socks4ServiceStatus, String socks5ServiceStatus, String socks5ServiceAuthStatus, String multiplierServiceStatus) {
         this.plainServiceStatus = plainServiceStatus;
         this.sslServiceStatus = sslServiceStatus;
         this.socks4ServiceStatus = socks4ServiceStatus;
         this.socks5ServiceStatus = socks5ServiceStatus;
+        this.socks5ServiceAuthStatus = socks5ServiceAuthStatus;
         this.multiplierServiceStatus = multiplierServiceStatus;
     }
 
@@ -59,6 +61,11 @@ public class ApplicationConfigImpl implements ApplicationConfig {
     @Override
     public Boolean isMultiplierServiceEnabled() {
         return checkString(multiplierServiceStatus);
+    }
+    
+    @Override
+    public Boolean isSocks5ServiceAuthEnabled() {
+        return checkString(socks5ServiceAuthStatus);
     }
     
     private Boolean checkString(String string) {

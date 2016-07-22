@@ -26,10 +26,13 @@ public class SocksProxyInitializer extends ChannelInitializer<SocketChannel> {
 
     private final HostAndPort socksProxy;
     private final HostAndPort targetHost;
+    private final Mode serviceMode;
 
-    public SocksProxyInitializer(HostAndPort socksProxy, HostAndPort targetHost) {
+    public SocksProxyInitializer(HostAndPort socksProxy, HostAndPort targetHost,
+            Mode serviceMode) {
         this.socksProxy = socksProxy;
         this.targetHost = targetHost;
+        this.serviceMode = serviceMode;
     }
 
 
@@ -37,6 +40,6 @@ public class SocksProxyInitializer extends ChannelInitializer<SocketChannel> {
     public void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline().addLast(
 //                new LoggingHandler(LogLevel.INFO),
-                new SocksProxyFrontendHandler(socksProxy, targetHost));
+                new SocksProxyFrontendHandler(socksProxy, targetHost, serviceMode));
     }
 }

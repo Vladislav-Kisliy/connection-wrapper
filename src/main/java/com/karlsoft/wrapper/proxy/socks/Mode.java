@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 vlad
+ * Copyright (C) 2016 Vladislav Kislyi <vladislav.kisliy@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,41 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.karlsoft.wrapper.config;
+package com.karlsoft.wrapper.proxy.socks;
 
 /**
- * Defines enabled services.
+ *
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
-public interface ApplicationConfig {
-    /**
-     * 
-     * @return 
-     */
-    public Boolean isPlainServiceEnabled();
-    /**
-     * 
-     * @return 
-     */
-    public Boolean isSSLServiceEnabled();
-    /**
-     * 
-     * @return 
-     */
-    public Boolean isSocks4ServiceEnabled();
-    /**
-     * 
-     * @return 
-     */
-    public Boolean isSocks5ServiceEnabled();
-    /**
-     * 
-     * @return 
-     */
-    public Boolean isSocks5ServiceAuthEnabled();
-    /**
-     * 
-     * @return 
-     */
-    public Boolean isMultiplierServiceEnabled();
+public enum Mode {
+    
+    SOCKS4, SOCKS5
 }

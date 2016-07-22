@@ -19,6 +19,7 @@ package com.karlsoft.wrapper.proxy.socks;
 import com.google.common.net.HostAndPort;
 import com.karlsoft.wrapper.proxy.base.BaseProxyBackendHandler;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -29,18 +30,21 @@ import io.netty.handler.proxy.Socks5ProxyHandler;
 import java.net.InetSocketAddress;
 
 /**
+ * Unwraps socks channel and transmit data as usual proxy
  *
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
 public class SocksBackendInitializer extends ChannelInitializer<SocketChannel> {
 
     private final Channel inboundChannel;
-
+    private final Mode serviceMode;
     private final HostAndPort socksProxy;
 
-    public SocksBackendInitializer(Channel inboundChannel, HostAndPort socksProxy) {
+    public SocksBackendInitializer(Channel inboundChannel, HostAndPort socksProxy,
+            Mode serviceMode) {
         this.inboundChannel = inboundChannel;
         this.socksProxy = socksProxy;
+        this.serviceMode = serviceMode;
     }
 
     @Override
@@ -52,8 +56,15 @@ public class SocksBackendInitializer extends ChannelInitializer<SocketChannel> {
         // and accept any invalid certificates in the client side.
         // You will need something more complicated to identify both
         // and server in the real world.
-        pipeline.addFirst(new Socks4ProxyHandler(
-                new InetSocketAddress(socksProxy.getHostText(), socksProxy.getPort())));
+        ChannelHandler socksHandler;
+        if (serviceMode == Mode.SOCKS4) {
+            socksHandler = new Socks4ProxyHandler(
+                    new InetSocketAddress(socksProxy.getHostText(), socksProxy.getPort()));
+        } else {
+            socksHandler = new Socks5ProxyHandler(
+                    new InetSocketAddress(socksProxy.getHostText(), socksProxy.getPort()));
+        }
+        pipeline.addFirst(socksHandler);
         pipeline.addLast(new LoggingHandler(LogLevel.INFO));
         // and then business logic.
         pipeline.addLast(new BaseProxyBackendHandler(inboundChannel));

@@ -54,34 +54,38 @@ public class ApplicationConfigImplTest {
     @Test
     public void testAllServiceEnabled() {
         ApplicationConfigImpl instance = new ApplicationConfigImpl("true", "true", "true",
-                "true", "true");
+                "true", "true", "true");
         assertTrue(instance.isPlainServiceEnabled());
         assertTrue(instance.isSSLServiceEnabled());
         assertTrue(instance.isSocks4ServiceEnabled());
         assertTrue(instance.isSocks5ServiceEnabled());
         assertTrue(instance.isMultiplierServiceEnabled());
+        assertTrue(instance.isSocks5ServiceAuthEnabled());
 
         instance = new ApplicationConfigImpl("true1", "true", "true", "true",
-                "true");
+                "true", "true");
         assertFalse(instance.isPlainServiceEnabled());
         assertTrue(instance.isSSLServiceEnabled());
         assertTrue(instance.isSocks4ServiceEnabled());
         assertTrue(instance.isSocks5ServiceEnabled());
         assertTrue(instance.isMultiplierServiceEnabled());
+        assertTrue(instance.isSocks5ServiceAuthEnabled());
 
-        instance = new ApplicationConfigImpl("", "", null, null, null);
+        instance = new ApplicationConfigImpl("", "", null, null, null, null);
         assertFalse(instance.isPlainServiceEnabled());
         assertFalse(instance.isSSLServiceEnabled());
         assertFalse(instance.isSocks4ServiceEnabled());
         assertFalse(instance.isSocks5ServiceEnabled());
         assertFalse(instance.isMultiplierServiceEnabled());
+        assertFalse(instance.isSocks5ServiceAuthEnabled());
 
         instance = new ApplicationConfigImpl("false", "false", "false", "false",
-                "false");
+                "false", "false");
         assertFalse(instance.isPlainServiceEnabled());
         assertFalse(instance.isSSLServiceEnabled());
         assertFalse(instance.isSocks4ServiceEnabled());
         assertFalse(instance.isSocks5ServiceEnabled());
         assertFalse(instance.isMultiplierServiceEnabled());
+        assertFalse(instance.isSocks5ServiceAuthEnabled());
     }
 }

@@ -33,12 +33,13 @@
         <constructor-arg value="${client.socks4.connect.server}" />
         <constructor-arg value="${client.socks4.target.server}" />
     </bean>
-<!--    <bean id="socks5ProxyService" class="com.karlsoft.wrapper.proxy.ssl.SSLProxyService">
-        <constructor-arg value="${server.ssl.listen.port}" />
-        <constructor-arg value="${client.ssl.connect.server}" />
-        <constructor-arg value="${client.ssl.connect.port}" />
-    </bean>-->
-        <bean id="multiplierProxyService" class="com.karlsoft.wrapper.proxy.multi.MultiplierProxyService">
+    <bean id="socks5ProxyService" class="com.karlsoft.wrapper.proxy.socks.SocksProxyService">
+        <constructor-arg value="${server.socks5.listen.port}" />
+        <constructor-arg value="${client.socks5.connect.server}" />
+        <constructor-arg value="${client.socks5.target.server}" />
+        <constructor-arg type="java.lang.Boolean" value="Boolean.TRUE" />
+    </bean>
+    <bean id="multiplierProxyService" class="com.karlsoft.wrapper.proxy.multi.MultiplierProxyService">
         <constructor-arg value="${server.multiplier.listen.port}" />
         <constructor-arg type="java.lang.Object">
             <bean class="org.springframework.util.StringUtils" factory-method="tokenizeToStringArray">

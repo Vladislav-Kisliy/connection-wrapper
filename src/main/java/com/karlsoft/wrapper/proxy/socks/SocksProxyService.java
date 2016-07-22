@@ -24,12 +24,13 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import java.util.Objects;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.net.ssl.SSLException;
 
 /**
- * Simple SSL chat client modified from {@link TelnetClient}.
+ * Connects to target server via socks proxy
  */
 public final class SocksProxyService  extends AbstractService {
 
@@ -40,25 +41,37 @@ public final class SocksProxyService  extends AbstractService {
     private final HostAndPort socksProxy;
     private final HostAndPort targetServer;
     private final Integer localPort;
+    private final Mode serviceMode;
 
     public SocksProxyService(String localPort, String socksHostPort, String targetHostPort) {
+        this(localPort, socksHostPort, targetHostPort, Boolean.FALSE);
+    }
+
+    public SocksProxyService(String localPort, String socksHostPort, String targetHostPort, Boolean isSocks5) {
         this.localPort = Integer.parseInt(localPort);
         this.socksProxy = HostAndPort.fromString(socksHostPort);
         this.targetServer = HostAndPort.fromString(targetHostPort);
         serviceName = "Socks proxy";
+        if (Objects.equals(isSocks5, Boolean.TRUE)) {
+            serviceMode = Mode.SOCKS5;
+        } else {
+            serviceMode = Mode.SOCKS4;
+        }
+        
     }
     
     @Override
-    protected void startService() throws SSLException, InterruptedException {
-        LOG.log(Level.INFO, "Proxying *:{0} to {1}", 
-                new Object[]{localPort.toString(), targetServer});
+    protected void startService() throws InterruptedException {
+        LOG.log(Level.INFO, "Proxying *:{0} to {1} via {2}",
+                new Object[]{localPort.toString(), targetServer, socksProxy});
         // Configure the bootstrap.
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new SocksProxyInitializer(socksProxy, targetServer))
+                    .childHandler(new SocksProxyInitializer(socksProxy, targetServer,
+                            serviceMode))
                     .childOption(ChannelOption.AUTO_READ, false)
                     .bind(localPort).sync()
                     .channel().closeFuture().sync();
