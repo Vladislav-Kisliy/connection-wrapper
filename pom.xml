@@ -49,7 +49,16 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <mainClass>${mainClass}</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
+                        <manifestEntries>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
+                            <Build-User>${user.name}</Build-User>
+                            <Build-Maven>Maven ${maven.version}</Build-Maven>
+                            <Build-Java>${java.version}</Build-Java>
+                            <Build-OS>${os.name}</Build-OS>
+                            <Build-Label>${project.version}</Build-Label>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -74,7 +83,16 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <mainClass>${mainClass}</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
+                        <manifestEntries>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
+                            <Build-User>${user.name}</Build-User>
+                            <Build-Maven>Maven ${maven.version}</Build-Maven>
+                            <Build-Java>${java.version}</Build-Java>
+                            <Build-OS>${os.name}</Build-OS>
+                            <Build-Label>${project.version}</Build-Label>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
