@@ -4,7 +4,7 @@
     <groupId>com.karlsoft.wrapper</groupId>
     <artifactId>wrapper</artifactId>
     <packaging>jar</packaging>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3-RELEASE</version>
     <name>Connection wrapper</name>
     <url>http://maven.apache.org</url>
     <properties>
