@@ -10,10 +10,10 @@ import com.karlsoft.wrapper.config.ApplicationConfig;
  *
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
-public class App {
+public class Application {
 
     public static void main(String[] args) {
-        new App().initServices();
+        new Application().initServices();
     }
 
     private void initServices() {
