@@ -31,10 +31,10 @@ import javax.net.ssl.SSLException;
 /**
  * Simple SSL chat client modified from {@link TelnetClient}.
  */
-public final class SSLProxyService  extends AbstractService {
+public final class SSLProxyService extends AbstractService {
 
     private static final Logger LOG = Logger.getLogger(SSLProxyService.class.getName());
-    
+
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
     private final Integer localPort;
@@ -45,24 +45,20 @@ public final class SSLProxyService  extends AbstractService {
         this.targetServer = HostAndPort.fromString(targetServer);
         serviceName = "SSL proxy";
     }
-    
+
     @Override
     protected void startService() throws SSLException, InterruptedException {
-        LOG.log(Level.INFO, "Proxying *:{0} to {1}", 
+        LOG.log(Level.INFO, "Proxying *:{0} to {1}",
                 new Object[]{localPort.toString(), targetServer});
         // Configure the bootstrap.
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new SSLProxyInitializer(targetServer))
-                    .childOption(ChannelOption.AUTO_READ, false)
-                    .bind(localPort).sync()
-                    .channel().closeFuture().sync();
-        } finally {
-            stopService();
-        }
+        ServerBootstrap b = new ServerBootstrap();
+        b.group(bossGroup, workerGroup)
+                .channel(NioServerSocketChannel.class)
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .childHandler(new SSLProxyInitializer(targetServer))
+                .childOption(ChannelOption.AUTO_READ, false)
+                .bind(localPort).sync()
+                .channel().closeFuture();
     }
 
     @Override

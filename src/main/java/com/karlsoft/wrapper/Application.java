@@ -20,6 +20,7 @@ public class Application {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("spring-application.xml");
         ApplicationConfig appConfig = (ApplicationConfig) ctx.getBean("appConfig");
         if (appConfig.isPlainServiceEnabled()) {
+            System.out.println("@@@ plainProxyService");
             ((Service) ctx.getBean("plainProxyService")).start();
         }
         if (appConfig.isSSLServiceEnabled()) {
@@ -29,9 +30,11 @@ public class Application {
             ((Service) ctx.getBean("socks4ProxyService")).start();
         }
         if (appConfig.isSocks5ServiceEnabled()) {
+            System.out.println("@@@ socks5ProxyService");
             ((Service) ctx.getBean("socks5ProxyService")).start();
         }
         if (appConfig.isMultiplierServiceEnabled()) {
+            System.out.println("@@@ multiplierProxyService");
             ((Service) ctx.getBean("multiplierProxyService")).start();
         }
     }

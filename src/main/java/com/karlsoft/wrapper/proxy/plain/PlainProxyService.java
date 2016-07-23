@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 
 /**
  * Set up/shutdown plain proxy service.
+ *
  * @author Vladislav Kislyi <vladislav.kisliy@gmail.com>
  */
 public final class PlainProxyService extends AbstractService {
@@ -50,21 +51,17 @@ public final class PlainProxyService extends AbstractService {
 
     @Override
     protected void startService() throws InterruptedException {
-        LOG.log(Level.INFO, "Proxying *:{0} to {1}", 
+        LOG.log(Level.INFO, "Proxying *:{0} to {1}",
                 new Object[]{localPort.toString(), targetServer});
         // Configure the bootstrap.
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new PlainProxyInitializer(targetServer))
-                    .childOption(ChannelOption.AUTO_READ, false)
-                    .bind(localPort).sync()
-                    .channel().closeFuture().sync();
-        } finally {
-            stopService();
-        }
+        ServerBootstrap b = new ServerBootstrap();
+        b.group(bossGroup, workerGroup)
+                .channel(NioServerSocketChannel.class)
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .childHandler(new PlainProxyInitializer(targetServer))
+                .childOption(ChannelOption.AUTO_READ, false)
+                .bind(localPort).sync()
+                .channel().closeFuture();
     }
 
     @Override

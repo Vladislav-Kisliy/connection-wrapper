@@ -55,7 +55,7 @@ public final class MultiplierProxyService extends AbstractService {
         Lists.newArrayList((String[]) stringArray).stream().forEach((host) -> {
             hosts.add(HostAndPort.fromString(host));
         });
-        System.out.println("list ="+hosts);
+        System.out.println("list =" + hosts);
     }
 
     @Override
@@ -63,21 +63,16 @@ public final class MultiplierProxyService extends AbstractService {
         LOG.log(Level.INFO, "Proxying *:{0} to {1}:{2}",
                 new Object[]{localPort.toString()});
         // Configure the server.
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_BACKLOG, 100)
-                    .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new MultiplierProxyInitializer(hosts));
-            // Start the server.
-            ChannelFuture f = b.bind(localPort).sync();
-            // Wait until the server socket is closed.
-            f.channel().closeFuture().sync();
-        } finally {
-            // Shut down all event loops to terminate all threads.
-            stopService();
-        }
+        ServerBootstrap b = new ServerBootstrap();
+        b.group(bossGroup, workerGroup)
+                .channel(NioServerSocketChannel.class)
+                .option(ChannelOption.SO_BACKLOG, 100)
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .childHandler(new MultiplierProxyInitializer(hosts));
+        // Start the server.
+        ChannelFuture f = b.bind(localPort).sync();
+        // Wait until the server socket is closed.
+        f.channel().closeFuture();
     }
 
     @Override

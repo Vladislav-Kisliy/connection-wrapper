@@ -32,10 +32,10 @@ import java.util.logging.Logger;
 /**
  * Connects to target server via socks proxy
  */
-public final class SocksProxyService  extends AbstractService {
+public final class SocksProxyService extends AbstractService {
 
     private static final Logger LOG = Logger.getLogger(SocksProxyService.class.getName());
-    
+
     private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
     private final HostAndPort socksProxy;
@@ -57,27 +57,23 @@ public final class SocksProxyService  extends AbstractService {
         } else {
             serviceMode = Mode.SOCKS4;
         }
-        
+
     }
-    
+
     @Override
     protected void startService() throws InterruptedException {
         LOG.log(Level.INFO, "Proxying *:{0} to {1} via {2}",
                 new Object[]{localPort.toString(), targetServer, socksProxy});
         // Configure the bootstrap.
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new SocksProxyInitializer(socksProxy, targetServer,
-                            serviceMode))
-                    .childOption(ChannelOption.AUTO_READ, false)
-                    .bind(localPort).sync()
-                    .channel().closeFuture().sync();
-        } finally {
-            stopService();
-        }
+        ServerBootstrap b = new ServerBootstrap();
+        b.group(bossGroup, workerGroup)
+                .channel(NioServerSocketChannel.class)
+                .handler(new LoggingHandler(LogLevel.INFO))
+                .childHandler(new SocksProxyInitializer(socksProxy, targetServer,
+                        serviceMode))
+                .childOption(ChannelOption.AUTO_READ, false)
+                .bind(localPort).sync()
+                .channel().closeFuture();
     }
 
     @Override

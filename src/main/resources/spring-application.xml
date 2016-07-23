@@ -8,11 +8,17 @@
 
     <!-- bean definitions here -->
     <!--Bean to load properties file -->  
-    <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">    
-        <property name="location" value="classpath:application.properties">  <!--reads application.properties file-->  
-        </property>
-    </bean>    
-    <bean id="appConfig" class="com.karlsoft.wrapper.config.ApplicationConfigImpl">
+        <bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">    
+            <property name="locations">
+                <list>
+                    <value>classpath:application.properties</value>
+                    <value>${application.properties}</value>
+                </list>
+            </property>
+            <property name="ignoreResourceNotFound" value="true"/>
+            <!--<property name="ignoreUnresolvablePlaceholders" value="false"/>-->
+        </bean>    
+        <bean id="appConfig" class="com.karlsoft.wrapper.config.ApplicationConfigImpl">
         <!--reference values read by PropertyPlaceholderConfigurer bean-->  
         <constructor-arg value="${server.plain.enabled}" />
         <constructor-arg value="${server.ssl.enabled}" />
