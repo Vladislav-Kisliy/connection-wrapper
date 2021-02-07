@@ -59,10 +59,10 @@ public class SocksBackendInitializer extends ChannelInitializer<SocketChannel> {
         ChannelHandler socksHandler;
         if (serviceMode == Mode.SOCKS4) {
             socksHandler = new Socks4ProxyHandler(
-                    new InetSocketAddress(socksProxy.getHostText(), socksProxy.getPort()));
+                    new InetSocketAddress(socksProxy.getHost(), socksProxy.getPort()));
         } else {
             socksHandler = new Socks5ProxyHandler(
-                    new InetSocketAddress(socksProxy.getHostText(), socksProxy.getPort()));
+                    new InetSocketAddress(socksProxy.getHost(), socksProxy.getPort()));
         }
         pipeline.addFirst(socksHandler);
         pipeline.addLast(new LoggingHandler(LogLevel.INFO));

@@ -69,16 +69,16 @@ public class MultiplierServerHandler extends ChannelInboundHandlerAdapter {
                             }
                         });
                 // Start the client.
-                ChannelFuture f = b.connect(hostAndPort.getHostText(), hostAndPort.getPort());
+                ChannelFuture f = b.connect(hostAndPort.getHost(), hostAndPort.getPort());
                 f.addListener((ChannelFutureListener) (ChannelFuture future) -> {
                     if (future.isSuccess()) {
                         // connection complete start to read first data
                         LOG.log(Level.INFO, "Connected to {0}:{1} successfully.",
-                                new Object[]{hostAndPort.getHostText(), hostAndPort.getPort()});
+                                new Object[]{hostAndPort.getHost(), hostAndPort.getPort()});
                     } else {
                         // Close the connection if the connection attempt has failed.
                         LOG.log(Level.WARNING, "Connection problem to {0}:{1}.",
-                                new Object[]{hostAndPort.getHostText(), hostAndPort.getPort()});
+                                new Object[]{hostAndPort.getHost(), hostAndPort.getPort()});
                     }
                 });
                 // Wait until the connection is closed.

@@ -78,16 +78,16 @@ public class MultiplierProxyFrontendHandler extends ChannelInboundHandlerAdapter
                             }
                         });
                 // Start the client.
-                ChannelFuture f = b.connect(host.getHostText(), host.getPort());
+                ChannelFuture f = b.connect(host.getHost(), host.getPort());
                 f.addListener((ChannelFutureListener) (ChannelFuture future) -> {
                     if (future.isSuccess()) {
                         // connection complete start to read first data
                         LOG.log(Level.INFO, "Connected to {0}:{1} successfully.",
-                                new Object[]{host.getHostText(), host.getPort()});
+                                new Object[]{host.getHost(), host.getPort()});
                     } else {
                         // Close the connection if the connection attempt has failed.
                         LOG.log(Level.WARNING, "Connection problem to {0}:{1}.",
-                                new Object[]{host.getHostText(), host.getPort()});
+                                new Object[]{host.getHost(), host.getPort()});
                     }
                 });
                 // Wait until the connection is closed.

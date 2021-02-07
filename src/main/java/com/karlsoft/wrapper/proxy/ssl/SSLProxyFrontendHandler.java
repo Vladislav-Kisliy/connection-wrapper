@@ -58,7 +58,7 @@ public class SSLProxyFrontendHandler extends BaseProxyFrontendHandler {
                         targetServer))
                 .option(ChannelOption.AUTO_READ, false);
         
-        ChannelFuture f = b.connect(targetServer.getHostText(), targetServer.getPort());
+        ChannelFuture f = b.connect(targetServer.getHost(), targetServer.getPort());
         outboundChannel = f.channel();
         f.addListener((ChannelFutureListener) (ChannelFuture future) -> {
             if (future.isSuccess()) {

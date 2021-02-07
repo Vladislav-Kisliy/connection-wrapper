@@ -49,7 +49,7 @@ public class SSLBackendInitializer extends ChannelInitializer<SocketChannel> {
         // and accept any invalid certificates in the client side.
         // You will need something more complicated to identify both
         // and server in the real world.
-        pipeline.addLast(sslCtx.newHandler(ch.alloc(), targetServer.getHostText(), targetServer.getPort()));
+        pipeline.addLast(sslCtx.newHandler(ch.alloc(), targetServer.getHost(), targetServer.getPort()));
 //        pipeline.addLast(new LoggingHandler(LogLevel.INFO));
         // and then business logic.
         pipeline.addLast(new BaseProxyBackendHandler(inboundChannel));
