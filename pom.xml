@@ -10,8 +10,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <plugin.compiler.version>3.5.1</plugin.compiler.version>
-        <software.junit.version>4.12</software.junit.version>
-        <software.netty.version>4.1.1.Final</software.netty.version>
+        <software.junit.version>4.13.1</software.junit.version>
+        <software.netty.version>4.1.58.Final</software.netty.version>
         <spring.version>4.3.0.RELEASE</spring.version>
         <guava.version>19.0</guava.version>
         <mainClass>com.karlsoft.wrapper.Application</mainClass>
